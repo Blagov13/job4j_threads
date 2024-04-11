@@ -5,7 +5,7 @@ This is a project for middle level.
 The following topics will be studied:
 
 1. Основы git
-2. Ветки
+2. Ветки в IDEA
 3. Threads
 4. Общие ресурсы
 5. Синхронизаци ресурсов
