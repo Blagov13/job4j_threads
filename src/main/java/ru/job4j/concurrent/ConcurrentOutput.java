@@ -3,12 +3,12 @@ package ru.job4j.concurrent;
 public class ConcurrentOutput {
     public static void main(String[] args) {
         Thread another = new Thread(
-                () -> {}
+                () -> { }
         );
         System.out.println(another.getName());
         another.start();
         Thread second = new Thread(
-                () -> {}
+                () -> { }
         );
         System.out.println(second.getName());
         second.start();
