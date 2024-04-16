@@ -37,10 +37,7 @@ public class AccountStorage {
     public synchronized boolean transfer(int fromId, int toId, int amount) {
             Optional<Account> fromAccount = getById(fromId);
             Optional<Account> toAccount = getById(toId);
-            if (fromAccount.isEmpty() || toAccount.isEmpty()) {
-                return false;
-            }
-            if (fromAccount.get().amount() < amount) {
+            if (fromAccount.isEmpty() || toAccount.isEmpty() || fromAccount.get().amount() < amount) {
                 return false;
             }
             update(new Account(fromAccount.get().id(), fromAccount.get().amount() - amount));
