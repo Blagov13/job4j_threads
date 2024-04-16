@@ -2,8 +2,9 @@ package ru.job4j.thread;
 
 import java.io.*;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.TimeUnit;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Wget implements Runnable {
     private final String url;
@@ -16,17 +17,20 @@ public class Wget implements Runnable {
 
     @Override
     public void run() {
-        try {
-            URLConnection connection = new URL(url).openConnection();
-            InputStream inputStream = connection.getInputStream();
+        Path file = Paths.get("output.data");
+        try (
+                InputStream inputStream = new URL(url).openStream();
+                OutputStream outputStream = Files.newOutputStream(file)
+        ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
                 long elapsedTime = System.nanoTime() - startTime;
                 double elapsedSeconds = elapsedTime / 1_000_000_000.0;
                 long timeForDownload = bytesRead / speed;
                 if (timeForDownload > elapsedSeconds) {
-                    TimeUnit.SECONDS.sleep((long) (timeForDownload - elapsedSeconds));
+                    Thread.sleep((long) (timeForDownload - elapsedSeconds));
                 }
             }
         } catch (IOException | InterruptedException e) {
