@@ -5,25 +5,18 @@ import net.jcip.annotations.ThreadSafe;
 
 import java.util.HashMap;
 import java.util.Optional;
+
 @ThreadSafe
 public class AccountStorage {
     @GuardedBy("accounts")
     private final HashMap<Integer, Account> accounts = new HashMap<>();
 
-    public synchronized boolean add(Account account) {
-        if (accounts.containsKey(account.id())) {
-            return false;
-        }
-        accounts.put(account.id(), account);
-        return true;
+    public synchronized void add(Account account) {
+        accounts.putIfAbsent(account.id(), account);
     }
 
-    public synchronized boolean update(Account account) {
-        if (!accounts.containsKey(account.id())) {
-            return false;
-        }
-        accounts.put(account.id(), account);
-        return true;
+    public synchronized void update(Account account) {
+        accounts.replace(account.id(), account);
     }
 
     public synchronized void delete(int id) {
@@ -35,13 +28,13 @@ public class AccountStorage {
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
-            Optional<Account> fromAccount = getById(fromId);
-            Optional<Account> toAccount = getById(toId);
-            if (fromAccount.isEmpty() || toAccount.isEmpty() || fromAccount.get().amount() < amount) {
-                return false;
-            }
-            update(new Account(fromAccount.get().id(), fromAccount.get().amount() - amount));
-            update(new Account(toAccount.get().id(), toAccount.get().amount() + amount));
-            return true;
+        Optional<Account> fromAccount = getById(fromId);
+        Optional<Account> toAccount = getById(toId);
+        if (fromAccount.isEmpty() || toAccount.isEmpty() || fromAccount.get().amount() < amount) {
+            return false;
+        }
+        update(new Account(fromAccount.get().id(), fromAccount.get().amount() - amount));
+        update(new Account(toAccount.get().id(), toAccount.get().amount() + amount));
+        return true;
     }
 }
