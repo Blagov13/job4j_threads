@@ -25,4 +25,12 @@ public class ParseFile {
             throw new IOException();
         }
     }
+
+    public String getAllContent() throws IOException {
+        return getContent(data -> true);
+    }
+
+    public String getFilteredContent() throws IOException {
+        return getContent(data -> data < 0x80);
+    }
 }
