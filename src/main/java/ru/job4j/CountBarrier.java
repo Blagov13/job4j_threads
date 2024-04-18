@@ -1,7 +1,6 @@
 package ru.job4j;
 
 public class CountBarrier {
-    private boolean flag = false;
     private final Object monitor = this;
 
     private final int total;
@@ -14,17 +13,14 @@ public class CountBarrier {
 
     public void count() {
         synchronized (monitor) {
+            monitor.notifyAll();
             count++;
-            while (count >= total) {
-                flag = true;
-                monitor.notifyAll();
-            }
         }
     }
 
     public void await() throws InterruptedException {
         synchronized (monitor) {
-            while (!flag) {
+            while (count < total) {
                 monitor.wait();
             }
         }
