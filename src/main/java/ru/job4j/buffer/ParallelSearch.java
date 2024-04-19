@@ -10,13 +10,13 @@ public class ParallelSearch {
                     while (!Thread.currentThread().isInterrupted()) {
                         try {
                             Integer value = queue.poll();
-                            if (value == null) {
-                                break;
+                            if (value != null) {
+                                System.out.println(value);
+                            } else {
+                                Thread.currentThread().interrupt();
                             }
-                            System.out.println(value);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                            break;
                         }
                     }
                 }
@@ -30,7 +30,6 @@ public class ParallelSearch {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                            break;
                         }
                     }
                 }
