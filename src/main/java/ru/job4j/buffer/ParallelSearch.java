@@ -9,12 +9,7 @@ public class ParallelSearch {
                 () -> {
                     while (!Thread.currentThread().isInterrupted()) {
                         try {
-                            Integer value = queue.poll();
-                            if (value != null) {
-                                System.out.println(value);
-                            } else {
-                                Thread.currentThread().interrupt();
-                            }
+                            System.out.println(queue.poll());
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
