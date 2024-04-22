@@ -7,7 +7,9 @@ public class EmailNotification {
     private final ExecutorService pool;
 
     public EmailNotification() {
-        this.pool = Executors.newFixedThreadPool(10);
+        this.pool = Executors.newFixedThreadPool(
+                Runtime.getRuntime().availableProcessors()
+        );
     }
 
     public void emailTo(User user) {
@@ -25,5 +27,10 @@ public class EmailNotification {
 
     public void close() {
         pool.shutdown();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
