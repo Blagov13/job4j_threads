@@ -7,19 +7,15 @@ import java.util.List;
 
 public class ThreadPool {
     private final List<Thread> threads = new LinkedList<>();
-    private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(100);
-    private volatile boolean isRunning = true;
+    private final int size = Runtime.getRuntime().availableProcessors();
+    private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(size);
 
     public ThreadPool() {
-        int size = Runtime.getRuntime().availableProcessors();
         for (int i = 0; i < size; i++) {
             Thread thread = new Thread(() -> {
-                while (isRunning || !tasks.isEmpty()) {
+                while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        Runnable job = tasks.poll();
-                        if (job != null) {
-                            job.run();
-                        }
+                        tasks.poll().run();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
@@ -30,16 +26,11 @@ public class ThreadPool {
         }
     }
 
-    public void work(Runnable job) throws InterruptedException {
-        if (isRunning) {
-            tasks.offer(job);
-        }
+    public synchronized void work(Runnable job) throws InterruptedException {
+        tasks.offer(job);
     }
 
     public void shutdown() {
-        isRunning = false;
-        for (Thread thread : threads) {
-            thread.interrupt();
-        }
+        threads.forEach(Thread::interrupt);
     }
 }
