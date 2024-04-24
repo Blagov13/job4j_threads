@@ -19,4 +19,24 @@ class CASCountTest {
         CASCount casCount = new CASCount();
         assertEquals(0, casCount.get());
     }
+
+    @Test
+    public void whenConcurrentIncrementsThenCorrectCount() throws InterruptedException {
+        final CASCount casCount = new CASCount();
+        int numberOfThreads = 10;
+        int incrementsPerThread = 100;
+        Thread[] threads = new Thread[numberOfThreads];
+        for (int i = 0; i < numberOfThreads; i++) {
+            threads[i] = new Thread(() -> {
+                for (int j = 0; j < incrementsPerThread; j++) {
+                    casCount.increment();
+                }
+            });
+            threads[i].start();
+        }
+        for (Thread thread : threads) {
+            thread.join();
+        }
+        assertEquals(numberOfThreads * incrementsPerThread, casCount.get());
+    }
 }
