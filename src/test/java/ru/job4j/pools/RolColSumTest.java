@@ -12,13 +12,13 @@ class RolColSumTest {
                 {4, 5, 6},
                 {7, 8, 9}
         };
-        RolColSum.Sums[] result = RolColSum.sum(matrix);
-        assertEquals(6, result[0].getRowSum());
-        assertEquals(12, result[0].getColSum());
-        assertEquals(15, result[1].getRowSum());
-        assertEquals(15, result[1].getColSum());
-        assertEquals(24, result[2].getRowSum());
-        assertEquals(18, result[2].getColSum());
+        Sums[] expected = {
+                new Sums(6, 12),
+                new Sums(15, 15),
+                new Sums(24, 18)
+        };
+        Sums[] result = RolColSum.sum(matrix);
+        assertArrayEquals(expected, result);
     }
 
     @Test
@@ -28,12 +28,12 @@ class RolColSumTest {
                 {4, 5, 6},
                 {7, 8, 9}
         };
-        RolColSum.Sums[] result = RolColSum.asyncSum(matrix);
-        assertEquals(6, result[0].getRowSum());
-        assertEquals(12, result[0].getColSum());
-        assertEquals(15, result[1].getRowSum());
-        assertEquals(15, result[1].getColSum());
-        assertEquals(24, result[2].getRowSum());
-        assertEquals(18, result[2].getColSum());
+        Sums[] expected = {
+                new Sums(6, 12),
+                new Sums(15, 15),
+                new Sums(24, 18)
+        };
+        Sums[] result = RolColSum.asyncSum(matrix);
+        assertArrayEquals(expected, result);
     }
 }
