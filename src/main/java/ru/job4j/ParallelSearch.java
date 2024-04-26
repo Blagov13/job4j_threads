@@ -22,35 +22,23 @@ public class ParallelSearch<T> extends RecursiveTask<Integer> {
         if (length <= 10) {
             return search();
         }
-            int mid = start + (length / 2);
-            ParallelSearch<T> leftTask = new ParallelSearch<>(array, target, start, mid);
-            ParallelSearch<T> rightTask = new ParallelSearch<>(array, target, mid, end);
-            leftTask.fork();
-            rightTask.fork();
-            int rightResult = rightTask.join();
-            int leftResult = leftTask.join();
+        int mid = start + (length / 2);
+        ParallelSearch<T> leftTask = new ParallelSearch<>(array, target, start, mid);
+        ParallelSearch<T> rightTask = new ParallelSearch<>(array, target, mid, end);
+        leftTask.fork();
+        rightTask.fork();
+        int rightResult = rightTask.join();
+        int leftResult = leftTask.join();
         return Math.max(leftResult, rightResult);
     }
 
     public static <T> int indexOf(T[] array, T target) {
         if (array == null || array.length == 0) {
             return -1;
-        }
-        if (array.length <= 10) {
-            return linearSearch(array, target);
         } else {
             ForkJoinPool pool = new ForkJoinPool();
             return pool.invoke(new ParallelSearch<>(array, target, 0, array.length));
         }
-    }
-
-    private static <T> int linearSearch(T[] array, T target) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equals(target)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private int search() {
